@@ -1,0 +1,17 @@
+{
+    "name": "schillermann/phppages",
+    "description": "Pages Framework Object Oriented With PHP",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "PhpPages\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": { "PhpPages\\Tests\\": "tests/" }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}
