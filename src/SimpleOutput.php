@@ -3,41 +3,40 @@ namespace PhpPages;
 
 class SimpleOutput implements OutputInterface
 {
-    private array $buffer;
+    private array $responseList;
 
-    public function __construct(array $buffer = [])
+    public function __construct(array $responseList = [])
     {
-        $this->buffer = $buffer;   
+        $this->responseList = $responseList;   
     }
 
     function __toString(): string {
-        return implode(PHP_EOL, $this->buffer);
+        return implode(PHP_EOL, $this->responseList);
     }
 
     public function metadata(string $name, string $value): Outputinterface
     {
-        if(!$this->buffer) {
-            $this->buffer[] = 'HTTP/1.1 200 OK';
+        if(!$this->responseList) {
+            $this->responseList[] = 'HTTP/1.1 200 OK';
         }
 
         if ("PhpPages-Body" === $name) {
-            $this->buffer[] = '';
-            $this->buffer[] = $value;
+            $this->responseList[] = '';
+            $this->responseList[] = $value;
         } else {
-            $this->buffer[] = $name . ': ' . $value;
+            $this->responseList[] = $name . ': ' . $value;
         }
-        return new SimpleOutput($this->buffer);
+        return new SimpleOutput($this->responseList);
     }
 
-    public function print(OutputStreamInterface $output): void
+    public function print(ResponseInterface $output): void
     {
-        for ($i = 0; $i < count($this->buffer); $i++) {
-            if (empty($this->buffer[$i])) {
-                $output->write($this->buffer[++$i]);
+        for ($i = 0; $i < count($this->responseList); $i++) {
+            if (empty($this->responseList[$i])) {
+                $output->body($this->responseList[++$i]);
                 continue;
             }
-            header($this->buffer[$i]);
-            $output->close();
+            $output->head($this->responseList[$i]);
         }
     }
 }
