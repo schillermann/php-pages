@@ -10,9 +10,9 @@ class OutputTest extends TestCase
     function testCanGetOutputAsString(): void
     {
         $output = (new SimpleOutput())
-            ->metadata('Content-Length', 12)
-            ->metadata('Content-Type', 'text/plain')
-            ->metadata('PhpPages-Body', 'Hello World!')
+            ->output('Content-Length', 12)
+            ->output('Content-Type', 'text/plain')
+            ->output('PhpPages-Body', 'Hello World!')
             ->__toString();
 
         $expected = <<<OUTPUT
@@ -34,10 +34,10 @@ OUTPUT;
         $response = new ResponseFake();
 
         (new SimpleOutput())
-            ->metadata('Content-Length', 12)
-            ->metadata('Content-Type', 'text/plain')
-            ->metadata('PhpPages-Body', 'Hello World!')
-            ->print($response);
+            ->output('Content-Length', 12)
+            ->output('Content-Type', 'text/plain')
+            ->output('PhpPages-Body', 'Hello World!')
+            ->write($response);
 
         $expected = <<<OUTPUT
 HTTP/1.1 200 OK

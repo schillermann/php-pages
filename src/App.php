@@ -10,11 +10,11 @@ class App
         $this->page = $page;
     }
 
-    function process(RequestInterface $request, ResponseInterface $response)
+    function process(RequestInterface $request, ResponseInterface $response): void
     {
         (new Session($this->page))
-            ->with($request)
-            ->via(new SimpleOutput())
-            ->print($response);
+            ->page($request)
+            ->output(new SimpleOutput())
+            ->write($response);
     }
 }

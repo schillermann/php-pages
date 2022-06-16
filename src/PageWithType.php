@@ -12,15 +12,15 @@ class PageWithType implements PageInterface
         $this->contentType = $contentType;
     }
 
-    function metadata(string $name, string $value): PageInterface
+    function page(string $name, string $value): PageInterface
     {
         return $this;
     }
 
-    function via(OutputInterface $output): OutputInterface
+    function output(OutputInterface $output): OutputInterface
     {
-        return $this->origin->via(
-            $output->metadata('Content-Type', $this->contentType)
+        return $this->origin->output(
+            $output->output('Content-Type', $this->contentType)
         );
     }
 }

@@ -12,8 +12,8 @@ class TextPageTest extends TestCase
     {
         $response = new ResponseFake();
         (new TextPage('Hello World!'))
-            ->via(new SimpleOutput())
-            ->print($response);
+            ->output(new SimpleOutput())
+            ->write($response);
 
         $expected = <<<OUTPUT
 HTTP/1.1 200 OK

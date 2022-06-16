@@ -14,7 +14,7 @@ class SimpleOutput implements OutputInterface
         return implode(PHP_EOL, $this->responseList);
     }
 
-    public function metadata(string $name, string $value): Outputinterface
+    public function output(string $name, string $value): Outputinterface
     {
         if(!$this->responseList) {
             $this->responseList[] = 'HTTP/1.1 200 OK';
@@ -29,7 +29,7 @@ class SimpleOutput implements OutputInterface
         return new SimpleOutput($this->responseList);
     }
 
-    public function print(ResponseInterface $output): void
+    public function write(ResponseInterface $output): void
     {
         for ($i = 0; $i < count($this->responseList); $i++) {
             if (empty($this->responseList[$i])) {

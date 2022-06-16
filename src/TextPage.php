@@ -10,16 +10,16 @@ class TextPage implements PageInterface
         $this->body = $text;    
     }
 
-    function metadata(string $name, string $value): PageInterface
+    function page(string $name, string $value): PageInterface
     {
         return $this;
     }
 
-    function via(OutputInterface $output): OutputInterface
+    function output(OutputInterface $output): OutputInterface
     {
         return $output
-            ->metadata('Content-Type', 'text/plain')
-            ->metadata('Content-Length', strlen($this->body))
-            ->metadata('PhpPages-Body', $this->body);
+            ->output('Content-Type', 'text/plain')
+            ->output('Content-Length', strlen($this->body))
+            ->output('PhpPages-Body', $this->body);
     }
 }

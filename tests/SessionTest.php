@@ -22,9 +22,9 @@ class SessionTest extends TestCase
         (new Session(
             new TextPage('Hello World!'))
         )
-            ->with($request)
-            ->via(new SimpleOutput())
-            ->print($response);
+            ->page($request)
+            ->output(new SimpleOutput())
+            ->write($response);
 
         $expected = <<<OUTPUT
 HTTP/1.1 200 OK
