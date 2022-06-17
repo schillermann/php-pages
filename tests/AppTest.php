@@ -5,6 +5,7 @@ use PhpPages\App;
 use PhpPages\PageWithRoutes;
 use PhpPages\RequestFake;
 use PhpPages\ResponseFake;
+use PhpPages\SimpleOutput;
 use PhpPages\TextPage;
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +25,8 @@ class AppTest extends TestCase
                 '/profile',
                 new TextPage('Hello World!'),
                 new TextPage('Page not found')
-            )
+            ),
+            new SimpleOutput()
         ))
             ->process(
                 $request,

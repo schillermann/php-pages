@@ -3,40 +3,40 @@ namespace PhpPages;
 
 class SimpleOutput implements OutputInterface
 {
-    private array $responseList;
+    private array $lines;
 
-    public function __construct(array $responseList = [])
+    public function __construct(array $lines = [])
     {
-        $this->responseList = $responseList;   
+        $this->lines = $lines;   
     }
 
     function __toString(): string {
-        return implode(PHP_EOL, $this->responseList);
+        return implode(PHP_EOL, $this->lines);
     }
 
     public function output(string $name, string $value): Outputinterface
     {
-        if(!$this->responseList) {
-            $this->responseList[] = 'HTTP/1.1 200 OK';
+        if(!$this->lines) {
+            $this->lines[] = 'HTTP/1.1 200 OK';
         }
 
         if ("PhpPages-Body" === $name) {
-            $this->responseList[] = '';
-            $this->responseList[] = $value;
+            $this->lines[] = '';
+            $this->lines[] = $value;
         } else {
-            $this->responseList[] = $name . ': ' . $value;
+            $this->lines[] = $name . ': ' . $value;
         }
-        return new SimpleOutput($this->responseList);
+        return new SimpleOutput($this->lines);
     }
 
     public function write(ResponseInterface $output): void
     {
-        for ($i = 0; $i < count($this->responseList); $i++) {
-            if (empty($this->responseList[$i])) {
-                $output->body($this->responseList[++$i]);
+        for ($i = 0; $i < count($this->lines); $i++) {
+            if (empty($this->lines[$i])) {
+                $output->body($this->lines[++$i]);
                 continue;
             }
-            $output->head($this->responseList[$i]);
+            $output->head($this->lines[$i]);
         }
     }
 }
