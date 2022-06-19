@@ -5,6 +5,7 @@ PhpPages is an experimental prototype of a web framework, inspired by [Yegor Bug
 ## Contents
 - [Quick Start](#quick-start)
 - [Templates](#templates)
+- [Development Principles](#development-principles)
 
 ## Quick Start
 This is how you start a web app.
@@ -114,3 +115,19 @@ class Page implements PageInterface
         new SimpleResponse()
     );
 ```
+
+## Development Principles
+### Class Structure
+Methods of a class are builders or manipulators.
+
+Builder is ...
+1. noun
+2. no modifications to the encapsulated data ([Pure function](https://en.wikipedia.org/wiki/Pure_function) without side-effects)
+3. returns object
+
+Manipulator is ...
+1. verb
+2. modifying encapsulated data
+3. returns void
+
+Source: [Builders and Manipulators](https://www.yegor256.com/2018/08/22/builders-and-manipulators.html)
