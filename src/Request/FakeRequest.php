@@ -1,7 +1,9 @@
 <?php
-namespace PhpPages;
+namespace PhpPages\Request;
 
-class RequestFake implements RequestInterface
+use PhpPages\RequestInterface;
+
+class FakeRequest implements RequestInterface
 {
     private string $body;
     private array $head;

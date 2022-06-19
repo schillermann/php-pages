@@ -2,23 +2,23 @@
 namespace PhpPages\Tests;
 
 use PhpPages\App;
-use PhpPages\PageWithRoutes;
-use PhpPages\RequestFake;
-use PhpPages\ResponseFake;
-use PhpPages\SimpleOutput;
-use PhpPages\TextPage;
+use PhpPages\Output\SimpleOutput;
+use PhpPages\Page\PageWithRoutes;
+use PhpPages\Page\TextPage;
+use PhpPages\Request\FakeRequest;
+use PhpPages\Response\FakeResponse;
 use PHPUnit\Framework\TestCase;
 
 class AppTest extends TestCase
 {
     function testCanGetResponse(): void
     {
-        $request = new RequestFake(
+        $request = new FakeRequest(
             'GET',
             '/profile',
             'HTTP/1.1'
         );
-        $response = new ResponseFake();
+        $response = new FakeResponse();
 
         (new App(
             new PageWithRoutes(

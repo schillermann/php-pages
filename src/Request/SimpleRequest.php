@@ -1,7 +1,9 @@
 <?php
-namespace PhpPages;
+namespace PhpPages\Request;
 
-class Request implements RequestInterface
+use PhpPages\RequestInterface;
+
+class SimpleRequest implements RequestInterface
 {
     function body(): string
     {

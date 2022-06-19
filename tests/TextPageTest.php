@@ -1,16 +1,16 @@
 <?php
 namespace PhpPages\Tests;
 
-use PhpPages\ResponseFake;
-use PhpPages\SimpleOutput;
-use PhpPages\TextPage;
+use PhpPages\Output\SimpleOutput;
+use PhpPages\Page\TextPage;
+use PhpPages\Response\FakeResponse;
 use PHPUnit\Framework\TestCase;
 
 class TextPageTest extends TestCase
 {
     function testCanGetResponse(): void
     {
-        $response = new ResponseFake();
+        $response = new FakeResponse();
         (new TextPage('Hello World!'))
             ->output(new SimpleOutput())
             ->write($response);

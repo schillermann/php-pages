@@ -1,16 +1,18 @@
 <?php
-namespace PhpPages;
+namespace PhpPages\Template;
 
-class Template implements TemplateInterface
+use PhpPages\TemplateInterface;
+
+class LayoutTemplate implements TemplateInterface
 {
     private string $file;
 
     function __construct(string $file)
     {
-        $this->file = $file;
+        $this->file = $file;    
     }
 
-    function content(array $placeholders = []): string
+    function content(array $params = []): string
     {
         ob_start();
         include($this->file);

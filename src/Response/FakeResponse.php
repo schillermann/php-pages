@@ -1,7 +1,9 @@
 <?php
-namespace PhpPages;
+namespace PhpPages\Response;
 
-class ResponseFake implements ResponseInterface
+use PhpPages\ResponseInterface;
+
+class FakeResponse implements ResponseInterface
 {
     private array $headList = [];
     private array $bodyList = [];

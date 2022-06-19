@@ -1,23 +1,23 @@
 <?php
 namespace PhpPages\Tests;
 
-use PhpPages\RequestFake;
-use PhpPages\ResponseFake;
+use PhpPages\Output\SimpleOutput;
+use PhpPages\Page\TextPage;
+use PhpPages\Request\FakeRequest;
+use PhpPages\Response\FakeResponse;
 use PhpPages\Session;
-use PhpPages\SimpleOutput;
-use PhpPages\TextPage;
 use PHPUnit\Framework\TestCase;
 
 class SessionTest extends TestCase
 {
     function testCanGetResponse(): void
     {
-        $request = new RequestFake(
+        $request = new FakeRequest(
             'GET',
             '/',
             'HTTP/1.1'
         );
-        $response = new ResponseFake();
+        $response = new FakeResponse();
 
         (new Session(
             new TextPage('Hello World!'))

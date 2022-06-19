@@ -1,7 +1,9 @@
 <?php
-namespace PhpPages;
+namespace PhpPages\Response;
 
-class Response implements ResponseInterface
+use PhpPages\ResponseInterface;
+
+class SimpleResponse implements ResponseInterface
 {
     public function head(string $head): void
     {

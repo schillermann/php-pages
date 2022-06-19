@@ -1,5 +1,8 @@
 <?php
-namespace PhpPages;
+namespace PhpPages\Page;
+
+use PhpPages\OutputInterface;
+use PhpPages\PageInterface;
 
 class PageWithRoutes implements PageInterface
 {

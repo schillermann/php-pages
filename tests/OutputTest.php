@@ -1,8 +1,8 @@
 <?php
 namespace PhpPages\Tests;
 
-use PhpPages\ResponseFake;
-use PhpPages\SimpleOutput;
+use PhpPages\Output\SimpleOutput;
+use PhpPages\Response\FakeResponse;
 use PHPUnit\Framework\TestCase;
 
 class OutputTest extends TestCase
@@ -31,7 +31,7 @@ OUTPUT;
 
     function testCanGetResponse(): void
     {
-        $response = new ResponseFake();
+        $response = new FakeResponse();
 
         (new SimpleOutput())
             ->output('Content-Length', 12)

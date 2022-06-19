@@ -1,5 +1,8 @@
 <?php
-namespace PhpPages;
+namespace PhpPages\Output;
+
+use PhpPages\OutputInterface;
+use PhpPages\ResponseInterface;
 
 class LayoutOutput implements OutputInterface
 {
@@ -25,13 +28,21 @@ class LayoutOutput implements OutputInterface
             );
         }
 
-        if ('PhpPages-Template' === $name) {
+        if (str_starts_with($name, 'PhpPages-Template')) {
+            $placeholder = strtoupper(substr($name, 9));
+            $layout = str_replace('{' . $placeholder . '}', $value, $this->layout);
+            $foundPlaceHolders = preg_match('/\{TEMPLATE.*\}/i', $layout);
+
+            if ($foundPlaceHolders) {
+                return new LayoutOutput(
+                    clone $this->origin,
+                    $layout
+                );
+            }
+
             return new LayoutOutput(
-                $this->origin->output(
-                    'PhpPages-Body',
-                    str_replace('{TEMPLATE}', $value, $this->layout)
-                ),
-                $this->layout
+                $this->origin->output('PhpPages-Body', $layout),
+                $layout
             );
         }
 

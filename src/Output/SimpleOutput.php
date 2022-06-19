@@ -1,5 +1,8 @@
 <?php
-namespace PhpPages;
+namespace PhpPages\Output;
+
+use PhpPages\OutputInterface;
+use PhpPages\ResponseInterface;
 
 class SimpleOutput implements OutputInterface
 {

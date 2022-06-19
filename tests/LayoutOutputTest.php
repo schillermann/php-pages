@@ -1,9 +1,9 @@
 <?php
 namespace PhpPages\Tests;
 
-use PhpPages\LayoutOutput;
-use PhpPages\ResponseFake;
-use PhpPages\SimpleOutput;
+use PhpPages\Output\LayoutOutput;
+use PhpPages\Output\SimpleOutput;
+use PhpPages\Response\FakeResponse;
 use PHPUnit\Framework\TestCase;
 
 class LayoutOutputTest extends TestCase
@@ -15,8 +15,9 @@ class LayoutOutputTest extends TestCase
         ))
             ->output('Content-Length', 12)
             ->output('Content-Type', 'text/plain')
-            ->output('PhpPages-Layout', 'Hello {TEMPLATE}!')
+            ->output('PhpPages-Layout', 'Hello {TEMPLATE}! {TEMPLATE-SIDEBAR}')
             ->output('PhpPages-Template', 'Mario')
+            ->output('PhpPages-Template-Sidebar', 'You are logged in.')
             ->__toString();
 
         $expected = <<<OUTPUT
@@ -24,7 +25,7 @@ HTTP/1.1 200 OK
 Content-Length: 12
 Content-Type: text/plain
 
-Hello Mario!
+Hello Mario! You are logged in.
 OUTPUT;
 
         $this->assertEquals(
@@ -35,15 +36,16 @@ OUTPUT;
 
     function testCanGetResponse(): void
     {
-        $response = new ResponseFake();
+        $response = new FakeResponse();
 
         (new LayoutOutput(
             new SimpleOutput()
         ))
             ->output('Content-Length', 12)
             ->output('Content-Type', 'text/plain')
-            ->output('PhpPages-Layout', 'Hello {TEMPLATE}!')
+            ->output('PhpPages-Layout', 'Hello {TEMPLATE}! {TEMPLATE-SIDEBAR}')
             ->output('PhpPages-Template', 'Mario')
+            ->output('PhpPages-Template-Sidebar', 'You are logged in.')
             ->write($response);
 
         $expected = <<<OUTPUT
@@ -51,7 +53,7 @@ HTTP/1.1 200 OK
 Content-Length: 12
 Content-Type: text/plain
 
-Hello Mario!
+Hello Mario! You are logged in.
 OUTPUT;
 
         $this->assertEquals(
