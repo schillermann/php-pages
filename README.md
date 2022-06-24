@@ -13,23 +13,19 @@ This is how you start a web app.
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-use PhpPages\App;
-use PhpPages\PageWithRoutes;
-use PhpPages\Request;
-use PhpPages\Response;
-use PhpPages\TextPage;
+use PhpPages\AppBundle\AppBundleBasic;
+use PhpPages\Page\PageWithRoutes;
+use PhpPages\Page\TextPage;
 
-(new App(
+require __DIR__ . '/vendor/autoload.php';
+
+(new AppBundleBasic(
     new PageWithRoutes(
         '/profile',
-        new TextPage('Hello World!'),
+        new TextPage("It's me. It's Mario."),
         new TextPage('Page not found')
-    )
-))
-    ->process(
-        new Request(),
-        new Response()
-    );
+)))
+    ->start();
 ```
 
 ## Templates
@@ -38,12 +34,9 @@ Create a layout page file `layout.php`.
 <!DOCTYPE html>
 <html>
   <head>
-    <title><?= $params['title']?></title>
+    <title><?= $this->params['title']?></title>
   </head>
   <body>
-    <header>
-      ss
-    </header>
     <main>
       {TEMPLATE}
     </main>
@@ -53,7 +46,7 @@ Create a layout page file `layout.php`.
 
 Create the file `page.php` to be used in the layout.
 ```php
-<h1>Main</h1>
+<h1>Hello <?= $this->params['name']; ?>!</h1>
 ```
 
 This is how you start a web app with templates.
@@ -61,59 +54,48 @@ This is how you start a web app with templates.
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-use PhpPages\App;
-use PhpPages\Output\LayoutOutput;
-use PhpPages\Output\SimpleOutput;
+use PhpPages\AppBundle\AppBundleWithLayout;
 use PhpPages\OutputInterface;
 use PhpPages\PageInterface;
-use PhpPages\Request\SimpleRequest;
-use PhpPages\Response\SimpleResponse;
-use PhpPages\Template\LayoutTemplate;
-use PhpPages\Template\PageTemplate;
+use PhpPages\Template\SimpleTemplate;
 use PhpPages\TemplateInterface;
 
 class Page implements PageInterface
 {
-    function __construct(TemplateInterface $template)
+    function __construct(TemplateInterface $layout)
     {
-        $this->template = $template;
+        $this->layout = $layout;
     }
 
-    public function page(string $name, string $value): PageInterface
+    public function viaOutput(OutputInterface $output): OutputInterface
+    {
+        $body = (new SimpleTemplate(
+            'page.php',
+            ['name' => 'Mario']
+        ))
+            ->withLayout($this->layout, '{TEMPLATE}')
+            ->content();
+
+        return $output
+            ->withMetadata('Content-Type', 'text/html')
+            ->withMetadata('Content-Length', strlen($body))
+            ->withMetadata('PhpPages-Body', $body);
+    }
+
+    public function withMetadata(string $name, string $value): PageInterface
     {
         return $this;
     }
-
-    public function output(OutputInterface $output): OutputInterface
-    {
-        $body = $this->template->content(
-            ['title' => 'Template Example']
-        );
-        return $output
-            ->output('Content-Type', 'text/html')
-            ->output('Content-Length', strlen($body))
-            ->output('PhpPages-Body', $body);
-    }
 }
 
-(new App(
+(new AppBundleWithLayout(
     new Page(
-        new PageTemplate(
-            new LayoutTemplate(
-                'layout.php'
-            ),
-            'page.php',
-            '{TEMPLATE}'
+        new SimpleTemplate(
+            'layout.php',
+            [ 'title' => 'Template Example' ]
         )
-    ),
-    new LayoutOutput(
-        new SimpleOutput()
-    )
-))
-    ->process(
-        new SimpleRequest(),
-        new SimpleResponse()
-    );
+)))
+    ->start();
 ```
 
 ## Development Principles
