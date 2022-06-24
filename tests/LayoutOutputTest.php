@@ -1,8 +1,8 @@
 <?php
 namespace PhpPages\Tests;
 
+use PhpPages\Output\BaseOutput;
 use PhpPages\Output\LayoutOutput;
-use PhpPages\Output\SimpleOutput;
 use PhpPages\Response\FakeResponse;
 use PHPUnit\Framework\TestCase;
 
@@ -11,13 +11,13 @@ class LayoutOutputTest extends TestCase
     function testCanGetOutputAsString(): void
     {
         $output = (new LayoutOutput(
-            new SimpleOutput()
+            new BaseOutput()
         ))
-            ->output('Content-Length', 12)
-            ->output('Content-Type', 'text/plain')
-            ->output('PhpPages-Layout', 'Hello {TEMPLATE}! {TEMPLATE-SIDEBAR}')
-            ->output('PhpPages-Template', 'Mario')
-            ->output('PhpPages-Template-Sidebar', 'You are logged in.')
+            ->withMetadata('Content-Length', 12)
+            ->withMetadata('Content-Type', 'text/plain')
+            ->withMetadata('PhpPages-Layout', 'Hello {TEMPLATE}! {TEMPLATE-SIDEBAR}')
+            ->withMetadata('PhpPages-Template', 'Mario')
+            ->withMetadata('PhpPages-Template-Sidebar', 'You are logged in.')
             ->__toString();
 
         $expected = <<<OUTPUT
@@ -39,14 +39,14 @@ OUTPUT;
         $response = new FakeResponse();
 
         (new LayoutOutput(
-            new SimpleOutput()
+            new BaseOutput()
         ))
-            ->output('Content-Length', 12)
-            ->output('Content-Type', 'text/plain')
-            ->output('PhpPages-Layout', 'Hello {TEMPLATE}! {TEMPLATE-SIDEBAR}')
-            ->output('PhpPages-Template', 'Mario')
-            ->output('PhpPages-Template-Sidebar', 'You are logged in.')
-            ->write($response);
+            ->withMetadata('Content-Length', 12)
+            ->withMetadata('Content-Type', 'text/plain')
+            ->withMetadata('PhpPages-Layout', 'Hello {TEMPLATE}! {TEMPLATE-SIDEBAR}')
+            ->withMetadata('PhpPages-Template', 'Mario')
+            ->withMetadata('PhpPages-Template-Sidebar', 'You are logged in.')
+            ->writeTo($response);
 
         $expected = <<<OUTPUT
 HTTP/1.1 200 OK

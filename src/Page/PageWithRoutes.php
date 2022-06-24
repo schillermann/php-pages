@@ -17,19 +17,19 @@ class PageWithRoutes implements PageInterface
         $this->fallback = $fallback;
     }
     
-    function page(string $name, string $value): PageInterface
+    function viaOutput(OutputInterface $output): OutputInterface
+    {
+        return $output;
+    }
+
+    function withMetadata(string $name, string $value): PageInterface
     {
         if ($name === 'PhpPages-Path') {
             if ($value === $this->path) {
-                return $this->origin->page($name, $value);
+                return $this->origin->withMetadata($name, $value);
             }
-            return $this->fallback->page($name, $value);
+            return $this->fallback->withMetadata($name, $value);
         }
         return $this;
-    }
-
-    function output(OutputInterface $output): OutputInterface
-    {
-        return $output;
     }
 }

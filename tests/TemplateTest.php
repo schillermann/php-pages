@@ -1,19 +1,46 @@
 <?php
 namespace PhpPages\Tests;
 
-use PhpPages\Template\LayoutTemplate;
-use PhpPages\Template\PageTemplate;
+use PhpPages\Template\SimpleTemplate;
 use PHPUnit\Framework\TestCase;
 
 class TemplateTest extends TestCase
 {
     function testCanBuildTemplate(): void
     {
-        $layoutTemplateContent = <<<'LAYOUT'
+        $pageContent = <<<'PAGE'
+<h1>Hello <?= $this->params['name'] ?>!</h1>
+PAGE;
+
+        $pageFileHandle = tmpfile();
+        fwrite($pageFileHandle, $pageContent);
+        $pageTemplateFile = stream_get_meta_data($pageFileHandle)['uri'];
+
+        $content = (new SimpleTemplate(
+            $pageTemplateFile,
+            ['name' => 'Mario']
+        ))
+            ->content();
+
+        fclose($pageFileHandle);
+  
+        $expected = <<<OUTPUT
+<h1>Hello Mario!</h1>
+OUTPUT;
+
+        $this->assertEquals(
+            $expected,
+            $content
+        );
+    }
+
+    function testCanBuildTemplateWithLayout(): void
+    {
+        $layoutContent = <<<'LAYOUT'
 <!DOCTYPE html>
 <html>
   <head>
-    <title><?= $params['title']?></title>
+    <title><?= $this->params['title']?></title>
   </head>
   <body>
     <main>
@@ -23,29 +50,33 @@ class TemplateTest extends TestCase
 </html>
 LAYOUT;
 
-        $pageTemplateContent = <<<'PAGE'
-<h1>Hello Test!</h1>
+        $pageContent = <<<'PAGE'
+<h1>Hello <?= $this->params['name'] ?>!</h1>
 PAGE;
 
-        $layoutTemplateFileHandle = tmpfile();
-        fwrite($layoutTemplateFileHandle, $layoutTemplateContent);
-        $layoutTemplateFile = stream_get_meta_data($layoutTemplateFileHandle)['uri'];
+        $layoutFileHandle = tmpfile();
+        fwrite($layoutFileHandle, $layoutContent);
+        $layoutFile = stream_get_meta_data($layoutFileHandle)['uri'];
 
-        $pageTemplateFileHandle = tmpfile();
-        fwrite($pageTemplateFileHandle, $pageTemplateContent);
-        $pageTemplateFile = stream_get_meta_data($pageTemplateFileHandle)['uri'];
+        $pageFileHandle = tmpfile();
+        fwrite($pageFileHandle, $pageContent);
+        $pageFile = stream_get_meta_data($pageFileHandle)['uri'];
 
-        $content = (new PageTemplate(
-            new LayoutTemplate(
-                $layoutTemplateFile
-            ),
-            $pageTemplateFile,
-            '{TEMPLATE}'
+        $content = (new SimpleTemplate(
+            $pageFile,
+            ['name' => 'Mario']
         ))
-            ->content(['title' => 'Template Test']);
+            ->withLayout(
+              new SimpleTemplate(
+                  $layoutFile,
+                  ['title' => 'Template Test']
+              ),
+                '{TEMPLATE}'
+            )
+            ->content();
         
-        fclose($layoutTemplateFileHandle);
-        fclose($pageTemplateFileHandle);
+        fclose($layoutFileHandle);
+        fclose($pageFileHandle);
      
         $expected = <<<OUTPUT
 <!DOCTYPE html>
@@ -55,7 +86,7 @@ PAGE;
   </head>
   <body>
     <main>
-      <h1>Hello Test!</h1>
+      <h1>Hello Mario!</h1>
     </main>
   </body>
 </html>
@@ -65,5 +96,39 @@ OUTPUT;
             $expected,
             $content
         );
+    }
+
+    function testPlaceholderNotFound(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $layoutContent = <<<'LAYOUT'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><?= $this->params['title']?></title>
+  </head>
+  <body>
+    <main>
+      {TEMPLATE}
+    </main>
+  </body>
+</html>
+LAYOUT;
+
+        $layoutFileHandle = tmpfile();
+        fwrite($layoutFileHandle, $layoutContent);
+        $layoutFile = stream_get_meta_data($layoutFileHandle)['uri'];
+
+        (new SimpleTemplate('file-does-not-exist.html'))
+            ->withLayout(
+              new SimpleTemplate(
+                  $layoutFile,
+                  ['title' => 'Template Test']
+              ),
+                '{TEMPLATE-NOT-EXISTS}'
+            );
+
+        fclose($layoutFileHandle);
     }
 }

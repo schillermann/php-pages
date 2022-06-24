@@ -2,9 +2,10 @@
 namespace PhpPages\Tests;
 
 use PhpPages\App;
-use PhpPages\Output\SimpleOutput;
+use PhpPages\Output\BaseOutput;
 use PhpPages\Page\PageWithRoutes;
 use PhpPages\Page\TextPage;
+use PhpPages\Process\BaseProcess;
 use PhpPages\Request\FakeRequest;
 use PhpPages\Response\FakeResponse;
 use PHPUnit\Framework\TestCase;
@@ -21,12 +22,14 @@ class AppTest extends TestCase
         $response = new FakeResponse();
 
         (new App(
-            new PageWithRoutes(
-                '/profile',
-                new TextPage('Hello World!'),
-                new TextPage('Page not found')
+            new BaseProcess(
+                new PageWithRoutes(
+                    '/profile',
+                    new TextPage('Hello World!'),
+                    new TextPage('Page not found')
+                )
             ),
-            new SimpleOutput()
+            new BaseOutput()
         ))
             ->process(
                 $request,

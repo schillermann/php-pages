@@ -1,7 +1,7 @@
 <?php
 namespace PhpPages\Tests;
 
-use PhpPages\Output\SimpleOutput;
+use PhpPages\Output\BaseOutput;
 use PhpPages\Page\TextPage;
 use PhpPages\Response\FakeResponse;
 use PHPUnit\Framework\TestCase;
@@ -12,8 +12,8 @@ class TextPageTest extends TestCase
     {
         $response = new FakeResponse();
         (new TextPage('Hello World!'))
-            ->output(new SimpleOutput())
-            ->write($response);
+            ->viaOutput(new BaseOutput())
+            ->writeTo($response);
 
         $expected = <<<OUTPUT
 HTTP/1.1 200 OK

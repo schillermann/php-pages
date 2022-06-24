@@ -13,16 +13,16 @@ class VerbosePage implements PageInterface
         $this->args = [];    
     }
 
-    function page(string $name, string $value): PageInterface
-    {
-        $this->args[] = $name . ': ' . $value;
-        return $this;
-    }
-
-    function output(OutputInterface $output): OutputInterface
+    function viaOutput(OutputInterface $output): OutputInterface
     {
         return (new TextPage(
             implode(PHP_EOL, $this->args)
-        ))->output($output);
+        ))->viaOutput($output);
+    }
+
+    function withMetadata(string $name, string $value): PageInterface
+    {
+        $this->args[] = $name . ': ' . $value;
+        return $this;
     }
 }

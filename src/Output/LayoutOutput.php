@@ -19,7 +19,7 @@ class LayoutOutput implements OutputInterface
         return $this->origin->__toString();
     }
 
-    public function output(string $name, string $value): Outputinterface
+    public function withMetadata(string $name, string $value): Outputinterface
     {
         if ('PhpPages-Layout' === $name) {
             return new LayoutOutput(
@@ -41,19 +41,19 @@ class LayoutOutput implements OutputInterface
             }
 
             return new LayoutOutput(
-                $this->origin->output('PhpPages-Body', $layout),
+                $this->origin->withMetadata('PhpPages-Body', $layout),
                 $layout
             );
         }
 
         return new LayoutOutput(
-            $this->origin->output($name, $value),
+            $this->origin->withMetadata($name, $value),
             $this->layout
         );
     }
 
-    public function write(ResponseInterface $output): void
+    public function writeTo(ResponseInterface $output): void
     {
-        $this->origin->write($output);
+        $this->origin->writeTo($output);
     }
 }

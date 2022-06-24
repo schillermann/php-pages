@@ -3,7 +3,7 @@ namespace PhpPages\Response;
 
 use PhpPages\ResponseInterface;
 
-class SimpleResponse implements ResponseInterface
+class BaseResponse implements ResponseInterface
 {
     public function head(string $head): void
     {

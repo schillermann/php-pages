@@ -3,6 +3,7 @@ namespace PhpPages;
 
 interface PageInterface
 {
-    function page(string $name, string $value): PageInterface;
-    function output(OutputInterface $output): OutputInterface;
+    function viaOutput(OutputInterface $output): OutputInterface;
+
+    function withMetadata(string $name, string $value): PageInterface;
 }

@@ -3,7 +3,7 @@ namespace PhpPages\Request;
 
 use PhpPages\RequestInterface;
 
-class SimpleRequest implements RequestInterface
+class BaseRequest implements RequestInterface
 {
     function body(): string
     {

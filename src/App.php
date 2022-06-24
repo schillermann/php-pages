@@ -3,20 +3,20 @@ namespace PhpPages;
 
 class App
 {
-    private PageInterface $page;
+    private ProcessInterface $process;
     private OutputInterface $output;
 
-    function __construct(PageInterface $page, OutputInterface $output)
+    function __construct(ProcessInterface $process, OutputInterface $output)
     {
-        $this->page = $page;
+        $this->process = $process;
         $this->output = $output;
     }
 
     function process(RequestInterface $request, ResponseInterface $response): void
     {
-        (new Session($this->page))
+        $this->process
             ->page($request)
-            ->output($this->output)
-            ->write($response);
+            ->viaOutput($this->output)
+            ->writeTo($response);
     }
 }
