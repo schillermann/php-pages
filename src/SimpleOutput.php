@@ -1,10 +1,10 @@
 <?php
-namespace PhpPages\Output;
+namespace PhpPages;
 
 use PhpPages\OutputInterface;
 use PhpPages\ResponseInterface;
 
-class BaseOutput implements OutputInterface
+class SimpleOutput implements OutputInterface
 {
     private array $head;
     private array $body;
@@ -35,7 +35,7 @@ class BaseOutput implements OutputInterface
         } else {
             $this->head[] = $name . ': ' . $value;
         }
-        return new BaseOutput($this->head, $this->body);
+        return new SimpleOutput($this->head, $this->body);
     }
 
     public function writeTo(ResponseInterface $response): void

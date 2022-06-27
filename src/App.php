@@ -1,22 +1,23 @@
 <?php
 namespace PhpPages;
 
+use PhpPages\Request\NativeRequest;
+use PhpPages\Response\NativeResponse;
+
 class App
 {
-    private ProcessInterface $process;
-    private OutputInterface $output;
+    private PageInterface $page;
 
-    function __construct(ProcessInterface $process, OutputInterface $output)
+    function __construct(PageInterface $page)
     {
-        $this->process = $process;
-        $this->output = $output;
+        $this->page = $page;
     }
 
-    function process(RequestInterface $request, ResponseInterface $response): void
+    function start(): void
     {
-        $this->process
-            ->page($request)
-            ->viaOutput($this->output)
-            ->writeTo($response);
+        (new Process($this->page))
+            ->page(new NativeRequest())
+            ->viaOutput(new SimpleOutput())
+            ->writeTo(new NativeResponse());
     }
 }

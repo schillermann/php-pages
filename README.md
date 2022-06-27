@@ -4,7 +4,8 @@ PhpPages is an experimental prototype of a web framework, inspired by [Yegor Bug
 
 ## Contents
 - [Quick Start](#quick-start)
-- [Templates](#templates)
+- [Routing](examples/routing/index.php)
+- [Template](examples/template/index.php)
 - [Development Principles](#development-principles)
 
 ## Quick Start
@@ -13,87 +14,17 @@ This is how you start a web app.
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-use PhpPages\AppBundle\AppBundleBasic;
+use PhpPages\App;
 use PhpPages\Page\PageWithRoutes;
 use PhpPages\Page\TextPage;
 
 require __DIR__ . '/vendor/autoload.php';
 
-(new AppBundleBasic(
+(new App(
     new PageWithRoutes(
         '/profile',
         new TextPage("It's me. It's Mario."),
         new TextPage('Page not found')
-)))
-    ->start();
-```
-
-## Templates
-Create a layout page file `layout.php`.
-```php
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><?= $this->params['title']?></title>
-  </head>
-  <body>
-    <main>
-      {TEMPLATE}
-    </main>
-  </body>
-</html>
-```
-
-Create the file `page.php` to be used in the layout.
-```php
-<h1>Hello <?= $this->params['name']; ?>!</h1>
-```
-
-This is how you start a web app with templates.
-```php
-<?php
-require __DIR__ . '/vendor/autoload.php';
-
-use PhpPages\AppBundle\AppBundleWithLayout;
-use PhpPages\OutputInterface;
-use PhpPages\PageInterface;
-use PhpPages\Template\SimpleTemplate;
-use PhpPages\TemplateInterface;
-
-class Page implements PageInterface
-{
-    function __construct(TemplateInterface $layout)
-    {
-        $this->layout = $layout;
-    }
-
-    public function viaOutput(OutputInterface $output): OutputInterface
-    {
-        $body = (new SimpleTemplate(
-            'page.php',
-            ['name' => 'Mario']
-        ))
-            ->withLayout($this->layout, '{TEMPLATE}')
-            ->content();
-
-        return $output
-            ->withMetadata('Content-Type', 'text/html')
-            ->withMetadata('Content-Length', strlen($body))
-            ->withMetadata('PhpPages-Body', $body);
-    }
-
-    public function withMetadata(string $name, string $value): PageInterface
-    {
-        return $this;
-    }
-}
-
-(new AppBundleWithLayout(
-    new Page(
-        new SimpleTemplate(
-            'layout.php',
-            [ 'title' => 'Template Example' ]
-        )
 )))
     ->start();
 ```

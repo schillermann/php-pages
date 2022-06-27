@@ -1,11 +1,10 @@
 <?php
-namespace PhpPages\Process;
+namespace PhpPages;
 
 use PhpPages\PageInterface;
-use PhpPages\ProcessInterface;
 use PhpPages\RequestInterface;
 
-class BaseProcess implements ProcessInterface
+class Process
 {
     private PageInterface $page;
 
