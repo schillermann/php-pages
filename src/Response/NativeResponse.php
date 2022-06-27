@@ -7,7 +7,7 @@ class NativeResponse implements ResponseInterface
 {
     public function head(string $head): void
     {
-        header($head);
+        header($head, false);
     }
 
     public function body(string $body): void
