@@ -24,13 +24,15 @@ class SimpleOutput implements OutputInterface
             implode(PHP_EOL, $this->body);
     }
 
-    public function withMetadata(string $name, string $value): Outputinterface
+    function withMetadata(string $name, string $value): Outputinterface
     {
         if(!$this->head) {
             $this->head[] = 'HTTP/1.1 200 OK';
         }
-
-        if ("PhpPages-Body" === $name) {
+        
+        if ('PhpPages-HttpStatus' === $name) {
+            $this->head[0] = $value;
+        } else if ("PhpPages-Body" === $name) {
             $this->body[] = $value;
         } else {
             $this->head[] = $name . ': ' . $value;
@@ -38,7 +40,7 @@ class SimpleOutput implements OutputInterface
         return new SimpleOutput($this->head, $this->body);
     }
 
-    public function writeTo(ResponseInterface $response): void
+    function writeTo(ResponseInterface $response): void
     {
         for ($i = 0; $i < count($this->head); $i++) {
             $response->head($this->head[$i]);

@@ -18,7 +18,7 @@ class ContentPage implements PageInterface
         $this->params = $params;
     }
 
-    public function viaOutput(OutputInterface $output): OutputInterface
+    function viaOutput(OutputInterface $output): OutputInterface
     {
         return $output->withMetadata(
             'PhpPages-Body',
@@ -26,7 +26,7 @@ class ContentPage implements PageInterface
         );
     }
 
-    public function withMetadata(string $name, string $value): PageInterface
+    function withMetadata(string $name, string $value): PageInterface
     {
         return $this;
     }
@@ -46,7 +46,7 @@ class LayoutPage implements PageInterface
         $this->main = $main;
         $this->foot = $foot;
     }
-    public function viaOutput(OutputInterface $output): OutputInterface
+    function viaOutput(OutputInterface $output): OutputInterface
     {
         $layoutSplit = preg_split(
             '({HEAD}|{MAIN}|{FOOT})',
@@ -69,7 +69,7 @@ class LayoutPage implements PageInterface
         return $footOutput;
     }
 
-    public function withMetadata(string $name, string $value): PageInterface
+    function withMetadata(string $name, string $value): PageInterface
     {
         return $this;   
     }
