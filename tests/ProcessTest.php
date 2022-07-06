@@ -1,17 +1,17 @@
 <?php
 namespace PhpPages\Tests;
 
-use PhpPages\Output\BaseOutput;
 use PhpPages\Page\VerbosePage;
-use PhpPages\Process\BaseProcess;
+use PhpPages\Process;
 use PhpPages\Request\FakeRequest;
+use PhpPages\SimpleOutput;
 use PHPUnit\Framework\TestCase;
 
-class BaseProcessTest extends TestCase
+class ProcessTest extends TestCase
 {
     function testCanGetOutput(): void
     {
-        $response = (new BaseProcess(
+        $response = (new Process(
                 new VerbosePage()
             )
         )
@@ -23,21 +23,21 @@ class BaseProcessTest extends TestCase
                 ''
             ))
             ->viaOutput(
-                new BaseOutput()
+                new SimpleOutput()
             )
             ->__toString();
 
         $expected = <<<OUTPUT
-HTTP/1.1 200 OK
-Content-Type: text/plain
-Content-Length: 102
+        HTTP/1.1 200 OK
+        Content-Length: 102
+        Content-Type: text/plain
 
-PhpPages-Method: GET
-PhpPages-Path: /
-PhpPages-Query: 
-PhpPages-Protocol: HTTP/1.1
-PhpPages-Body: 
-OUTPUT;
+        PhpPages-Method: GET
+        PhpPages-Path: /
+        PhpPages-Query: 
+        PhpPages-Protocol: HTTP/1.1
+        PhpPages-Body: 
+        OUTPUT;
 
         $this->assertEquals(
             $expected,

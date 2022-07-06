@@ -7,9 +7,9 @@ use PhpPages\ResponseInterface;
 class SimpleOutput implements OutputInterface
 {
     private array $head;
-    private array $body;
+    private string $body;
 
-    public function __construct(array $head = [], array $body = [])
+    public function __construct(array $head = [], string $body = '')
     {
         $this->head = $head;
         $this->body = $body;
@@ -21,19 +21,21 @@ class SimpleOutput implements OutputInterface
             implode(PHP_EOL, $this->head) .
             PHP_EOL .
             PHP_EOL .
-            implode(PHP_EOL, $this->body);
+            $this->body;
     }
 
     function withMetadata(string $name, string $value): Outputinterface
     {
         if(!$this->head) {
             $this->head[] = 'HTTP/1.1 200 OK';
+            $this->head[] = 'Content-Length: 0';
         }
         
         if ('PhpPages-HttpStatus' === $name) {
             $this->head[0] = $value;
         } else if ("PhpPages-Body" === $name) {
-            $this->body[] = $value;
+            $this->body .= ($this->body)? PHP_EOL . $value : $value;
+            $this->head[1] = 'Content-Length: ' . strlen($this->body);
         } else {
             $this->head[] = $name . ': ' . $value;
         }
@@ -42,12 +44,10 @@ class SimpleOutput implements OutputInterface
 
     function writeTo(ResponseInterface $response): void
     {
-        for ($i = 0; $i < count($this->head); $i++) {
-            $response->head($this->head[$i]);
+        foreach ($this->head as $headRow) {
+            $response->head($headRow);
         }
 
-        $response->body(
-            implode(PHP_EOL, $this->body)
-        );
+        $response->body($this->body);
     }
 }

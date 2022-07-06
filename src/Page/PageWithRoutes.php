@@ -3,18 +3,17 @@ namespace PhpPages\Page;
 
 use PhpPages\OutputInterface;
 use PhpPages\PageInterface;
+use PhpPages\PageWithRoutesInterface;
 
-class PageWithRoutes implements PageInterface
+class PageWithRoutes implements PageWithRoutesInterface
 {
-    private string $path;
-    private PageInterface $origin;
     private PageInterface $fallback;
+    private array $routesWithPage;
 
-    function __construct(string $path, PageInterface $origin, PageInterface $fallback)
+    function __construct(PageInterface $fallback, array $routesWithPage = [])
     {
-        $this->path = $path;
-        $this->origin = $origin;
         $this->fallback = $fallback;
+        $this->routesWithPage = $routesWithPage;
     }
     
     function viaOutput(OutputInterface $output): OutputInterface
@@ -25,11 +24,23 @@ class PageWithRoutes implements PageInterface
     function withMetadata(string $name, string $value): PageInterface
     {
         if ($name === 'PhpPages-Path') {
-            if ($value === $this->path) {
-                return $this->origin->withMetadata($name, $value);
+
+            if (array_key_exists($value, $this->routesWithPage)) {
+                return $this->routesWithPage[$value]->withMetadata($name, $value);
             }
+
             return $this->fallback->withMetadata($name, $value);
         }
         return $this;
+    }
+
+    public function withRoute(string $route, PageInterface $page): PageWithRoutesInterface
+    {
+        $this->routesWithPage[$route] = $page;
+
+        return new PageWithRoutes(
+            $this->fallback,
+            $this->routesWithPage
+        );
     }
 }

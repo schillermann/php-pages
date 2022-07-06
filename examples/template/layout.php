@@ -5,8 +5,7 @@
     <title><?= $params['title'] ?></title>
 </head>
 <body>
-    <header>{HEAD}</header>
-    <main>{MAIN}</main>
-    <footer>{FOOT}</footer>
+    <header>{TEMPLATE}</header>
+    <main>{TEMPLATE}</main>
 </body>
 </html>

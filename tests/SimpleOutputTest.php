@@ -1,29 +1,28 @@
 <?php
 namespace PhpPages\Tests;
 
-use PhpPages\Output\BaseOutput;
 use PhpPages\Response\FakeResponse;
+use PhpPages\SimpleOutput;
 use PHPUnit\Framework\TestCase;
 
-class BaseOutputTest extends TestCase
+class SimpleOutputTest extends TestCase
 {
     function testCanGetOutputAsString(): void
     {
-        $output = (new BaseOutput())
-            ->withMetadata('Content-Length', 12)
+        $output = (new SimpleOutput())
             ->withMetadata('Content-Type', 'text/plain')
             ->withMetadata('PhpPages-Body', 'Hello World!')
             ->withMetadata('PhpPages-Body', 'This is a test.')
             ->__toString();
 
         $expected = <<<OUTPUT
-HTTP/1.1 200 OK
-Content-Length: 12
-Content-Type: text/plain
+        HTTP/1.1 200 OK
+        Content-Length: 29
+        Content-Type: text/plain
 
-Hello World!
-This is a test.
-OUTPUT;
+        Hello World!
+        This is a test.
+        OUTPUT;
 
         $this->assertEquals(
             $expected,
@@ -35,21 +34,20 @@ OUTPUT;
     {
         $response = new FakeResponse();
 
-        (new BaseOutput())
-            ->withMetadata('Content-Length', 12)
+        (new SimpleOutput())
             ->withMetadata('Content-Type', 'text/plain')
             ->withMetadata('PhpPages-Body', 'Hello World!')
             ->withMetadata('PhpPages-Body', 'This is a test.')
             ->writeTo($response);
 
         $expected = <<<OUTPUT
-HTTP/1.1 200 OK
-Content-Length: 12
-Content-Type: text/plain
+        HTTP/1.1 200 OK
+        Content-Length: 29
+        Content-Type: text/plain
 
-Hello World!
-This is a test.
-OUTPUT;
+        Hello World!
+        This is a test.
+        OUTPUT;
 
         $this->assertEquals(
             $expected,

@@ -3,7 +3,10 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use PhpPages\App;
 use PhpPages\OutputInterface;
+use PhpPages\Page\LayoutPage;
 use PhpPages\PageInterface;
+use PhpPages\Request\NativeRequest;
+use PhpPages\Response\NativeResponse;
 use PhpPages\Template\SimpleTemplate;
 use PhpPages\TemplateInterface;
 
@@ -22,7 +25,9 @@ class ContentPage implements PageInterface
     {
         return $output->withMetadata(
             'PhpPages-Body',
-            $this->template->content($this->params)
+            $this->template->content(
+                $this->params
+            )
         );
     }
 
@@ -32,62 +37,24 @@ class ContentPage implements PageInterface
     }
 }
 
-class LayoutPage implements PageInterface
-{
-    private TemplateInterface $layout;
-    private PageInterface $head;
-    private PageInterface $main;
-    private PageInterface $foot;
-
-    function __construct(TemplateInterface $layout, PageInterface $head, PageInterface $main, PageInterface $foot)
-    {
-        $this->layout = $layout;
-        $this->head = $head;
-        $this->main = $main;
-        $this->foot = $foot;
-    }
-    function viaOutput(OutputInterface $output): OutputInterface
-    {
-        $layoutSplit = preg_split(
-            '({HEAD}|{MAIN}|{FOOT})',
-            $this->layout->content(
-                ['title' => 'Hello World!']
-            )
-        );
-
-        $outputWithStart = $output->withMetadata('PhpPages-Body', $layoutSplit[0]);
-
-        $outputWithHead = $this->head->viaOutput($outputWithStart)
-            ->withMetadata('PhpPages-Body', $layoutSplit[1]);
-        
-        $outputWithMain = $this->main->viaOutput($outputWithHead)
-            ->withMetadata('PhpPages-Body', $layoutSplit[2]);
-
-        $footOutput = $this->foot->viaOutput($outputWithMain)
-            ->withMetadata('PhpPages-Body',$layoutSplit[3]);
-        
-        return $footOutput;
-    }
-
-    function withMetadata(string $name, string $value): PageInterface
-    {
-        return $this;   
-    }
-}
-
 (new App(
-    new LayoutPage(
+    (new LayoutPage(
         new SimpleTemplate('layout.php'),
-        new ContentPage(
-            new SimpleTemplate('head.php'),
-            [ 'name' => 'Mario' ]
-        ),
-        new ContentPage(
-            new SimpleTemplate('main.php')
-        ),
-        new ContentPage(
-            new SimpleTemplate('foot.php')
+    ))
+        ->withPage(
+            new ContentPage(
+                new SimpleTemplate('head.php'),
+                [ 'name' => 'Mario' ]
+            )
         )
-    )
+        ->withPage(
+            new ContentPage(
+                new SimpleTemplate('main.php')
+            )
+        )
 ))
-    ->start();
+    ->start(
+        new NativeRequest(),
+        new NativeResponse()
+    );
+    

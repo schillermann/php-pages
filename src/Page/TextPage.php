@@ -17,7 +17,6 @@ class TextPage implements PageInterface
     {
         return $output
             ->withMetadata('Content-Type', 'text/plain')
-            ->withMetadata('Content-Length', strlen($this->body))
             ->withMetadata('PhpPages-Body', $this->body);
     }
 

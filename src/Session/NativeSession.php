@@ -23,6 +23,11 @@ class NativeSession implements SessionInterface
         return $this->session;
     }
 
+    function empty(): bool
+    {
+        return empty($this->session);
+    }
+
     function exists(string $name): bool
     {
         return array_key_exists($name, $this->session);

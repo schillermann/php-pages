@@ -7,6 +7,8 @@ interface SessionInterface
 
     function array(): array;
 
+    function empty(): bool;
+
     function exists(string $name): bool;
 
     function param(string $name): string;

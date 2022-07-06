@@ -16,7 +16,6 @@ class SimplePage implements PageInterface
     function viaOutput(OutputInterface $output): OutputInterface
     {
         return $output
-            ->withMetadata('Content-Length', strlen($this->body))
             ->withMetadata('PhpPages-Body', $this->body);
     }
 

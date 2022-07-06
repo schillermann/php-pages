@@ -3,7 +3,7 @@ namespace PhpPages\Form;
 
 use PhpPages\FormDataInterface;
 
-class BaseFormData implements FormDataInterface
+class SimpleFormData implements FormDataInterface
 {
     private string $params; 
     private array $paramMap;
@@ -30,6 +30,6 @@ class BaseFormData implements FormDataInterface
             return $this->paramMap[$name];
         }
 
-        throw new \OutOfRangeException('Param "' . $name . '" is not a part of form data');
+        return '';
     }
 }

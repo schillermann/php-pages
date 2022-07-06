@@ -1,9 +1,9 @@
 <?php
 namespace PhpPages\Tests;
 
-use PhpPages\Output\BaseOutput;
 use PhpPages\Page\TextPage;
 use PhpPages\Response\FakeResponse;
+use PhpPages\SimpleOutput;
 use PHPUnit\Framework\TestCase;
 
 class TextPageTest extends TestCase
@@ -12,16 +12,16 @@ class TextPageTest extends TestCase
     {
         $response = new FakeResponse();
         (new TextPage('Hello World!'))
-            ->viaOutput(new BaseOutput())
+            ->viaOutput(new SimpleOutput())
             ->writeTo($response);
 
         $expected = <<<OUTPUT
-HTTP/1.1 200 OK
-Content-Type: text/plain
-Content-Length: 12
+        HTTP/1.1 200 OK
+        Content-Length: 12
+        Content-Type: text/plain
 
-Hello World!
-OUTPUT;
+        Hello World!
+        OUTPUT;
 
         $this->assertEquals(
             $expected,

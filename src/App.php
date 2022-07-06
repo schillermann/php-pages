@@ -1,9 +1,6 @@
 <?php
 namespace PhpPages;
 
-use PhpPages\Request\NativeRequest;
-use PhpPages\Response\NativeResponse;
-
 class App
 {
     private PageInterface $page;
@@ -13,11 +10,11 @@ class App
         $this->page = $page;
     }
 
-    function start(): void
+    function start(RequestInterface $request, ResponseInterface $response): void
     {
         (new Process($this->page))
-            ->page(new NativeRequest())
+            ->page($request)
             ->viaOutput(new SimpleOutput())
-            ->writeTo(new NativeResponse());
+            ->writeTo($response);
     }
 }

@@ -1,15 +1,15 @@
 <?php
 namespace PhpPages\Tests;
 
-use PhpPages\Form\BaseFormData;
+use PhpPages\Form\SimpleFormData;
 use PHPUnit\Framework\TestCase;
 
-class BaseFormDataTest extends TestCase
+class SimpleFormDataTest extends TestCase
 {
     function testCanGetParam(): void
     {
         $expected = 'müll=trash';
-        $form = new BaseFormData(
+        $form = new SimpleFormData(
             'type=' . urlencode($expected) . '&color=' . urlencode('red&green')
         );
 
@@ -21,8 +21,8 @@ class BaseFormDataTest extends TestCase
 
     function testKeyParamNotFound(): void
     {
-        $this->expectException(\OutOfRangeException::class);
-
-        (new BaseFormData(''))->param('no-param');
+        $this->assertEmpty(
+            (new SimpleFormData(''))->param('no-param')
+        );
     }
 }
