@@ -46,7 +46,16 @@ class LayoutPage implements PageLayoutInterface
 
     function withMetadata(string $name, string $value): PageInterface
     {
-        return $this;   
+        $pages = [];
+        foreach ($this->pages as $page) {
+            $pages[] = $page->withMetadata($name, $value);
+        }
+
+        return new LayoutPage(
+            $this->layout,
+            $this->params,
+            $pages
+        );
     }
 
     function withPage(PageInterface $page): PageLayoutInterface

@@ -17,7 +17,7 @@ class PageWithType implements PageInterface
 
     function withMetadata(string $name, string $value): PageInterface
     {
-        return $this;
+        return $this->origin->withMetadata($name, $value);
     }
 
     function viaOutput(OutputInterface $output): OutputInterface

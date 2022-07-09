@@ -38,7 +38,7 @@ use PhpPages\Response\NativeResponse;
 
 ## Development Principles
 ### Class Structure
-Methods of a class are builders or manipulators.
+#### Methods of a class are builders or manipulators.
 
 Builder is ...
 1. noun
@@ -51,3 +51,5 @@ Manipulator is ...
 3. returns void
 
 Source: [Builders and Manipulators](https://www.yegor256.com/2018/08/22/builders-and-manipulators.html)
+
+#### No private Methods

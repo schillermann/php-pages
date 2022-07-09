@@ -18,9 +18,15 @@ class NativeSession implements SessionInterface
         $_SESSION[$name] = $value;
     }
 
-    public function array(): array
+    function array(): array
     {
         return $this->session;
+    }
+
+    function clear(): void
+    {
+        $this->session = [];
+        $_SESSION = [];
     }
 
     function empty(): bool
