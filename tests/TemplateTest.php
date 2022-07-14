@@ -9,7 +9,7 @@ class TemplateTest extends TestCase
     function testCanBuildTemplate(): void
     {
         $pageContent = <<<'PAGE'
-        <h1>Hello <?= $params['name'] ?>!</h1>
+        <h1>Hello <?= $name ?>!</h1>
         PAGE;
 
         $pageFileHandle = tmpfile();
@@ -19,11 +19,8 @@ class TemplateTest extends TestCase
         $content = (new SimpleTemplate(
             $pageTemplateFile
         ))
-            ->content(
-                [
-                    'name' => 'Mario'
-                ]
-            );
+            ->withParam('name', 'Mario')
+            ->content();
 
         fclose($pageFileHandle);
   

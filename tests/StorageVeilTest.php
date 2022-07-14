@@ -1,7 +1,7 @@
 <?php
 namespace PhpPages\Tests;
 
-use PhpPages\Veil;
+use PhpPages\StorageVeil;
 use PHPUnit\Framework\TestCase;
 
 class Dummy
@@ -14,11 +14,11 @@ class Dummy
     function save(): void {}
 }
 
-class VeilTest extends TestCase
+class StorageVeilTest extends TestCase
 {
     function testCanGetNameOfVeil(): void
     {
-        $dummy = new Veil(
+        $dummy = new StorageVeil(
             new Dummy(),
             ['name' => 'New Name']
         );
@@ -31,7 +31,7 @@ class VeilTest extends TestCase
 
     function testCanVeilBePierced(): void
     {
-        $dummy = new Veil(
+        $dummy = new StorageVeil(
             new Dummy(),
             ['name' => 'New Name']
         );

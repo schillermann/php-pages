@@ -13,21 +13,21 @@ use PhpPages\TemplateInterface;
 class ContentPage implements PageInterface
 {
     private TemplateInterface $template;
-    private array $params;
+    private string $name;
 
-    function __construct(TemplateInterface $template, array $params = [])
+    function __construct(TemplateInterface $template, string $name = '')
     {
         $this->template = $template;
-        $this->params = $params;
+        $this->name = $name;
     }
 
     function viaOutput(OutputInterface $output): OutputInterface
     {
         return $output->withMetadata(
             'PhpPages-Body',
-            $this->template->content(
-                $this->params
-            )
+            $this->template
+                ->withParam('name', $this->name)
+                ->content()
         );
     }
 
@@ -44,7 +44,7 @@ class ContentPage implements PageInterface
         ->withPage(
             new ContentPage(
                 new SimpleTemplate('head.php'),
-                [ 'name' => 'Mario' ]
+                'Mario'
             )
         )
         ->withPage(

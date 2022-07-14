@@ -1,15 +1,17 @@
 <?php
 namespace PhpPages;
 
-class Veil
+class StorageVeil
 {
     private $origin;
     private array $methods;
+    private bool $unveil;
 
-    function __construct($origin, array $methods)
+    function __construct($origin, array $methods, bool $unveil = true)
     {
         $this->origin = $origin;
         $this->methods = $methods;
+        $this->unveil = $unveil;
     }
   
     function __call($method, $arguments)
@@ -17,7 +19,11 @@ class Veil
         if (array_key_exists($method, $this->methods)) {
             return $this->methods[$method];
         }
-        $this->methods = [];
+
+        if ($this->unveil) {
+            $this->methods = [];
+        }
+        
         return $this->origin->{$method}(...$arguments);
     }
 }

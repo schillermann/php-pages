@@ -17,7 +17,7 @@ class LayoutTest extends TestCase
         <html>
         <head>
             <meta charset="utf-8">
-            <title><?= $params['title'] ?></title>
+            <title><?= $title ?></title>
         </head>
         <body>
             <header>

@@ -21,12 +21,14 @@ class LayoutPage implements PageLayoutInterface
 
     function viaOutput(OutputInterface $output): OutputInterface
     {
+        $layout = clone $this->layout;
+        foreach ($this->params as $name => $value) {
+            $layout = $this->layout->withParam($name, $value);
+        }
 
         $layoutSplit = explode(
             '{TEMPLATE}',
-            $this->layout->content(
-                $this->params
-            )
+            $layout->content()
         );
 
         $pageIndex = 0;
@@ -61,6 +63,12 @@ class LayoutPage implements PageLayoutInterface
     function withPage(PageInterface $page): PageLayoutInterface
     {
         $this->pages[] = $page;
+        return new LayoutPage($this->layout, $this->params, $this->pages);
+    }
+
+    function withParam(string $name, $value): PageLayoutInterface
+    {
+        $this->params[$name] = $value;
         return new LayoutPage($this->layout, $this->params, $this->pages);
     }
 }
