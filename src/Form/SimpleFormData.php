@@ -14,7 +14,7 @@ class SimpleFormData implements FormDataInterface
         $this->paramMap = [];
     }
 
-    function param(string $name): string
+    function exists(string $name): bool
     {
         if (empty($this->paramMap)) {
             $paramSplit = explode('&', $this->params);
@@ -26,7 +26,13 @@ class SimpleFormData implements FormDataInterface
                 }
             }            
         }
-        if (array_key_exists($name, $this->paramMap)) {
+
+        return array_key_exists($name, $this->paramMap);
+    }
+
+    function param(string $name): string
+    {
+        if ($this->exists($name)) {
             return $this->paramMap[$name];
         }
 
