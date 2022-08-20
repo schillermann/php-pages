@@ -63,7 +63,7 @@ Manipulator is ...
 
 Source: [Builders and Manipulators](https://www.yegor256.com/2018/08/22/builders-and-manipulators.html)
 
-### Measuring Complexity
+## Measuring Complexity
 
 The complexity and thus the maintainability, can be measured with different metrics.  
 However, some can be applied and interpreted differently.  
