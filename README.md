@@ -7,6 +7,7 @@ PhpPages is an experimental prototype of a web framework, inspired by [Yegor Bug
 - [Routing](examples/routing/index.php)
 - [Template](examples/template/index.php)
 - [Development Principles](#development-principles)
+- [Measuring Complexity](#measuring-complexity)
 
 ## Quick Start
 This is how you start a web app.
@@ -61,3 +62,15 @@ Manipulator is ...
 3. returns void
 
 Source: [Builders and Manipulators](https://www.yegor256.com/2018/08/22/builders-and-manipulators.html)
+
+### Measuring Complexity
+
+The complexity and thus the maintainability, can be measured with different metrics.  
+However, some can be applied and interpreted differently.  
+This makes the [metrics inaccurate](https://thevaluable.dev/complexity-metrics-software/#measuring-complexity-is-only-the-beginning).
+
+If you want to find hidden complexity, you could start with the simplest mertrics.
+1. [LOC](https://thevaluable.dev/complexity-metrics-software/#counting-lines-of-code)
+2. [Code shape](https://thevaluable.dev/complexity-metrics-software/#code-shape)
+3. [Structural coupling](https://thevaluable.dev/complexity-metrics-software/#structural-coupling-static-analysis-of-the-codebase)
+4. [Logical coupling](https://thevaluable.dev/complexity-metrics-software/#logical-coupling)
