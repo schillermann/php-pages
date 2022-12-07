@@ -16,7 +16,7 @@ class SimplePage implements PageInterface
     function viaOutput(OutputInterface $output): OutputInterface
     {
         return $output
-            ->withMetadata('PhpPages-Body', $this->body);
+            ->withMetadata(PageInterface::BODY, $this->body);
     }
 
     function withMetadata(string $name, string $value): PageInterface

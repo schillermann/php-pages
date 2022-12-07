@@ -20,15 +20,15 @@ class Process
         $query = (array_key_exists(1, $requestUri))? $requestUri[1] : '';
         
         $page = (clone $this->page)
-            ->withMetadata('PhpPages-Method', $request->method())
-            ->withMetadata('PhpPages-Path', $path)
-            ->withMetadata('PhpPages-Query', $query)
-            ->withMetadata('PhpPages-Protocol', $request->protocol());
+            ->withMetadata(PageInterface::METHOD, $request->method())
+            ->withMetadata(PageInterface::PATH, $path)
+            ->withMetadata(PageInterface::QUERY, $query)
+            ->withMetadata(PageInterface::PROTOCOL, $request->protocol());
 
         foreach ($request->head() as $name => $value) {
             $page = $page->withMetadata($name, $value);
         }
 
-        return $page->withMetadata('PhpPages-Body', $request->body());
+        return $page->withMetadata(PageInterface::BODY, $request->body());
     }
 }

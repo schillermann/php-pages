@@ -3,7 +3,7 @@ namespace PhpPages;
 
 interface TemplateInterface
 {
-    function content(): string;
+    public function __toString(): string;
 
-    function withParam(string $name, $value): TemplateInterface;
+    public function withParameter(string $name, $value): TemplateInterface;
 }

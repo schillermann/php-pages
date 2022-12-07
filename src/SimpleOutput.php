@@ -31,15 +31,15 @@ class SimpleOutput implements OutputInterface
             $this->head[] = 'Content-Length: 0';
         }
         
-        if ('PhpPages-HttpStatus' === $name) {
+        if (PageInterface::STATUS === $name) {
             $this->head[0] = $value;
-        } else if ("PhpPages-Body" === $name) {
+        } else if (PageInterface::BODY === $name) {
             $this->body .= ($this->body)? PHP_EOL . $value : $value;
             $this->head[1] = 'Content-Length: ' . strlen($this->body);
         } else {
             $this->head[] = $name . ': ' . $value;
         }
-        return new SimpleOutput($this->head, $this->body);
+        return new self($this->head, $this->body);
     }
 
     function writeTo(ResponseInterface $response): void

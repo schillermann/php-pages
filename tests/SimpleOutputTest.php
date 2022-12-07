@@ -1,6 +1,7 @@
 <?php
 namespace PhpPages\Tests;
 
+use PhpPages\PageInterface;
 use PhpPages\Response\FakeResponse;
 use PhpPages\SimpleOutput;
 use PHPUnit\Framework\TestCase;
@@ -11,9 +12,8 @@ class SimpleOutputTest extends TestCase
     {
         $output = (new SimpleOutput())
             ->withMetadata('Content-Type', 'text/plain')
-            ->withMetadata('PhpPages-Body', 'Hello World!')
-            ->withMetadata('PhpPages-Body', 'This is a test.')
-            ->__toString();
+            ->withMetadata(PageInterface::BODY, 'Hello World!')
+            ->withMetadata(PageInterface::BODY, 'This is a test.');
 
         $expected = <<<OUTPUT
         HTTP/1.1 200 OK
@@ -36,8 +36,8 @@ class SimpleOutputTest extends TestCase
 
         (new SimpleOutput())
             ->withMetadata('Content-Type', 'text/plain')
-            ->withMetadata('PhpPages-Body', 'Hello World!')
-            ->withMetadata('PhpPages-Body', 'This is a test.')
+            ->withMetadata(PageInterface::BODY, 'Hello World!')
+            ->withMetadata(PageInterface::BODY, 'This is a test.')
             ->writeTo($response);
 
         $expected = <<<OUTPUT

@@ -4,8 +4,8 @@ PhpPages is an experimental prototype of a web framework, inspired by [Yegor Bug
 
 ## Contents
 - [Quick Start](#quick-start)
-- [Routing](examples/routing/index.php)
-- [Template](examples/template/index.php)
+- [Templates](#templates)
+- [REST-API](#rest-api)
 - [Development Principles](#development-principles)
 - [Measuring Complexity](#measuring-complexity)
 
@@ -16,20 +16,226 @@ This is how you start a web app.
 require __DIR__ . '/vendor/autoload.php';
 
 use PhpPages\App;
-use PhpPages\Page\PageWithRoutes;
+use PhpPages\OutputInterface;
 use PhpPages\Page\TextPage;
+use PhpPages\PageInterface;
 use PhpPages\Request\NativeRequest;
 use PhpPages\Response\NativeResponse;
 
 (new App(
-    (new PageWithRoutes(
-        new TextPage('Page not found')
-        
-    ))
-        ->withRoute(
-            '/profile',
-            new TextPage("It's me. It's Mario.")
-        )
+    new class implements PageInterface {
+        public function viaOutput(OutputInterface $output): OutputInterface
+        {
+            return $output->withMetadata(
+                PageInterface::STATUS,
+                'HTTP/1.1 404 Not Found'
+            );
+        }
+
+        public function withMetadata(string $name, string $value): PageInterface
+        {
+            if ($name !== PageInterface::PATH) {
+                return $this;
+            }
+
+            if ($value === '/profile') {
+                return new TextPage("It's me. It's Mario.");
+            }
+            
+            return new TextPage('Page not found');
+        }
+    }
+))
+    ->start(
+        new NativeRequest(),
+        new NativeResponse()
+    );
+```
+## Templates
+
+Now let's see how we can reder some pages with templates.
+We use PHP as template type.
+
+First we create the `layout.php` template file.
+```php
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title><?= $title ?></title>
+</head>
+<body>
+    <header>
+        <?= $header ?>
+    </header>
+    <main>
+        <?= $main ?>
+    </main>
+</body>
+</html>
+```
+
+For our page head we need the `header.php` template file.
+```php
+<h1><?= $headline ?></h1>
+```
+
+The application then looks like this, with our nice look and feel layout.
+```php
+<?php
+require __DIR__ . '/vendor/autoload.php';
+
+use PhpPages\App;
+use PhpPages\OutputInterface;
+use PhpPages\Page\TextPage;
+use PhpPages\PageInterface;
+use PhpPages\Request\NativeRequest;
+use PhpPages\Response\NativeResponse;
+use PhpPages\Template\PhpTemplate;
+use PhpPages\TemplateInterface;
+
+class ProfilePage implements PageInterface
+{
+    private TemplateInterface $layout;
+
+    public function __construct(TemplateInterface $layout)
+    {
+        $this->layout = $layout;
+    }
+
+    public function viaOutput(OutputInterface $output): OutputInterface
+    {
+        return $output
+            ->withMetadata(
+                'Content-Type',
+                'text/html'
+            )
+            ->withMetadata(
+                PageInterface::BODY,
+                $this->layout
+                    ->withParameter(
+                        'title',
+                        'My Profile'
+                    )
+                    ->withParameter(
+                        'main',
+                        "<p>It's me. It's Mario.</p>"
+                    )
+            );
+    }
+
+    public function withMetadata(string $name, string $value): PageInterface
+    {
+        return $this;
+    }
+    
+}
+
+(new App(
+    new class implements PageInterface {
+        private TemplateInterface $layout;
+
+        public function __construct()
+        {
+            $this->layout = (new PhpTemplate('layout.php'))
+                ->withParameter(
+                    'title',
+                    'My Layout'
+                )
+                ->withParameter(
+                    'header',
+                    (new PhpTemplate('header.php'))
+                        ->withParameter('headline', 'My Header')
+                );
+        }
+
+        public function viaOutput(OutputInterface $output): OutputInterface
+        {
+            return $output->withMetadata(
+                PageInterface::STATUS,
+                'HTTP/1.1 404 Not Found'
+            );
+        }
+
+        public function withMetadata(string $name, string $value): PageInterface
+        {
+            if ($name !== PageInterface::PATH) {
+                return $this;
+            }
+
+            if ($value === '/profile') {
+                return new ProfilePage($this->layout);
+            }
+            
+            return new TextPage('Page not found');
+        }
+    }
+))
+    ->start(
+        new NativeRequest(),
+        new NativeResponse()
+    );
+```
+
+## REST-API
+
+Simple REST-API example.
+
+```php
+<?php
+require __DIR__ . '/vendor/autoload.php';
+
+use PhpPages\App;
+use PhpPages\OutputInterface;
+use PhpPages\Page\TextPage;
+use PhpPages\PageInterface;
+use PhpPages\Request\NativeRequest;
+use PhpPages\Response\NativeResponse;
+
+class UserById implements PageInterface
+{
+    public function viaOutput(OutputInterface $output): OutputInterface
+    {
+        return $output
+            ->withMetadata(
+                'Content-Type',
+                'application/json'
+            )
+            ->withMetadata(
+                PageInterface::BODY,
+                json_encode(['type' => 'user with id endpoint'])
+            );
+    }
+
+    public function withMetadata(string $name, string $value): PageInterface
+    {
+        return $this;
+    }
+}
+
+(new App(
+    new class implements PageInterface {
+        public function viaOutput(OutputInterface $output): OutputInterface
+        {
+            return $output->withMetadata(
+                PageInterface::STATUS,
+                'HTTP/1.1 404 Not Found'
+            );
+        }
+
+        public function withMetadata(string $name, string $value): PageInterface
+        {
+            if ($name !== PageInterface::PATH) {
+                return $this;
+            }
+
+            if (preg_match('/\/users\/[0-9]+/', $value)) {
+                return new UserById();
+            }
+            
+            return new TextPage('Endpoint not found');
+        }
+    }
 ))
     ->start(
         new NativeRequest(),

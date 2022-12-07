@@ -2,8 +2,9 @@
 namespace PhpPages\Tests;
 
 use PhpPages\App;
-use PhpPages\Page\PageWithRoutes;
+use PhpPages\OutputInterface;
 use PhpPages\Page\TextPage;
+use PhpPages\PageInterface;
 use PhpPages\Request\FakeRequest;
 use PhpPages\Response\FakeResponse;
 use PHPUnit\Framework\TestCase;
@@ -20,22 +21,37 @@ class AppTest extends TestCase
         $response = new FakeResponse();
 
         (new App(
-            (new PageWithRoutes(
-                new TextPage('Page not found')
-            ))
-                ->withRoute(
-                    '/profile',
-                    new TextPage('Hello World!')
-                )
+            new class implements PageInterface {
+                public function viaOutput(OutputInterface $output): OutputInterface
+                {
+                    return $output->withMetadata(
+                        PageInterface::STATUS,
+                        'HTTP/1.1 404 Not Found'
+                    );
+                }
+
+                public function withMetadata(string $name, string $value): PageInterface
+                {
+                    if ($name !== PageInterface::PATH) {
+                        return $this;
+                    }
+
+                    if ($value === '/profile') {
+                        return new TextPage('My Profile');
+                    }
+                    
+                    return new TextPage('Page not Found');
+                }
+            }
         ))
             ->start($request, $response);
 
         $expected = <<<OUTPUT
         HTTP/1.1 200 OK
-        Content-Length: 12
+        Content-Length: 10
         Content-Type: text/plain
 
-        Hello World!
+        My Profile
         OUTPUT;
 
         $this->assertEquals(
