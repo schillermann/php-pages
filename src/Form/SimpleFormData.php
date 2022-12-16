@@ -38,4 +38,13 @@ class SimpleFormData implements FormDataInterface
 
         return '';
     }
+
+    function paramWithDefault(string $name, string $defaultValue): string
+    {
+        $value = $this->param($name);
+        if ($value) {
+            return $value;
+        }
+        return $defaultValue;
+    }
 }
