@@ -1,4 +1,5 @@
 <?php
+
 namespace PhpPages\Session;
 
 use PhpPages\SessionInterface;
@@ -37,7 +38,7 @@ class NativeSession implements SessionInterface
     function param(string $name): string
     {
         if (array_key_exists($name, $this->session)) {
-            return $this->session[$name];
+            return $this->session[$name] ?? '';
         }
         return '';
     }
