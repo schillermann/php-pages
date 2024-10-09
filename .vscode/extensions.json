@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "bmewburn.vscode-intelephense-client",
-    "emallin.phpunit"
+    "emallin.phpunit",
+    "junstyle.php-cs-fixer"
   ]
 }
