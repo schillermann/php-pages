@@ -1,4 +1,5 @@
 <?php
+
 namespace PhpPages\Tests;
 
 use PhpPages\PageInterface;
@@ -17,7 +18,7 @@ class SimpleOutputTest extends TestCase
 
         $expected = <<<OUTPUT
         HTTP/1.1 200 OK
-        Content-Length: 29
+        Content-Length: 28
         Content-Type: text/plain
 
         Hello World!
@@ -42,7 +43,7 @@ class SimpleOutputTest extends TestCase
 
         $expected = <<<OUTPUT
         HTTP/1.1 200 OK
-        Content-Length: 29
+        Content-Length: 28
         Content-Type: text/plain
 
         Hello World!

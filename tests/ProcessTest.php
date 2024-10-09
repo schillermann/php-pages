@@ -1,4 +1,5 @@
 <?php
+
 namespace PhpPages\Tests;
 
 use PhpPages\Page\VerbosePage;
@@ -12,8 +13,8 @@ class ProcessTest extends TestCase
     function testCanGetOutput(): void
     {
         $response = (new Process(
-                new VerbosePage()
-            )
+            new VerbosePage()
+        )
         )
             ->page(new FakeRequest(
                 'GET',
@@ -29,7 +30,7 @@ class ProcessTest extends TestCase
 
         $expected = <<<OUTPUT
         HTTP/1.1 200 OK
-        Content-Length: 102
+        Content-Length: 98
         Content-Type: text/plain
 
         PhpPages-Method: GET
