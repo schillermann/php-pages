@@ -1,4 +1,5 @@
 <?php
+
 namespace PhpPages\Page;
 
 use PhpPages\OutputInterface;
@@ -10,13 +11,13 @@ class SimplePage implements PageInterface
 
     function __construct(string $text)
     {
-        $this->body = $text;    
+        $this->body = $text;
     }
 
     function viaOutput(OutputInterface $output): OutputInterface
     {
         return $output
-            ->withMetadata(PageInterface::BODY, $this->body);
+            ->withMetadata(PageInterface::METADATA_BODY, $this->body);
     }
 
     function withMetadata(string $name, string $value): PageInterface

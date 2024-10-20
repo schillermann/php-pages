@@ -1,4 +1,5 @@
 <?php
+
 namespace PhpPages;
 
 use PhpPages\PageInterface;
@@ -17,18 +18,18 @@ class Process
     {
         $requestUri = explode('?', $request->uri());
         $path = $requestUri[0];
-        $query = (array_key_exists(1, $requestUri))? $requestUri[1] : '';
-        
+        $query = (array_key_exists(1, $requestUri)) ? $requestUri[1] : '';
+
         $page = (clone $this->page)
-            ->withMetadata(PageInterface::METHOD, $request->method())
-            ->withMetadata(PageInterface::PATH, $path)
-            ->withMetadata(PageInterface::QUERY, $query)
-            ->withMetadata(PageInterface::PROTOCOL, $request->protocol());
+            ->withMetadata(PageInterface::METADATA_METHOD, $request->method())
+            ->withMetadata(PageInterface::METADATA_PATH, $path)
+            ->withMetadata(PageInterface::METADATA_QUERY, $query)
+            ->withMetadata(PageInterface::METADATA_PROTOCOL, $request->protocol());
 
         foreach ($request->head() as $name => $value) {
             $page = $page->withMetadata($name, $value);
         }
 
-        return $page->withMetadata(PageInterface::BODY, $request->body());
+        return $page->withMetadata(PageInterface::METADATA_BODY, $request->body());
     }
 }

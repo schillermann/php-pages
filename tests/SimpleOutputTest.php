@@ -13,8 +13,8 @@ class SimpleOutputTest extends TestCase
     {
         $output = (new SimpleOutput())
             ->withMetadata('Content-Type', 'text/plain')
-            ->withMetadata(PageInterface::BODY, 'Hello World!')
-            ->withMetadata(PageInterface::BODY, 'This is a test.');
+            ->withMetadata(PageInterface::METADATA_BODY, 'Hello World!')
+            ->withMetadata(PageInterface::METADATA_BODY, 'This is a test.');
 
         $expected = <<<OUTPUT
         HTTP/1.1 200 OK
@@ -37,8 +37,8 @@ class SimpleOutputTest extends TestCase
 
         (new SimpleOutput())
             ->withMetadata('Content-Type', 'text/plain')
-            ->withMetadata(PageInterface::BODY, 'Hello World!')
-            ->withMetadata(PageInterface::BODY, 'This is a test.')
+            ->withMetadata(PageInterface::METADATA_BODY, 'Hello World!')
+            ->withMetadata(PageInterface::METADATA_BODY, 'This is a test.')
             ->writeTo($response);
 
         $expected = <<<OUTPUT

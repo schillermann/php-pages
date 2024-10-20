@@ -73,11 +73,11 @@ interface PageInterface
     const STATUS_510_NOT_EXTENDED = 'HTTP/1.1 510 Not Extended';
     const STATUS_511_NETWORK_AUTHENTICATION_REQUIRED = 'HTTP/1.1 511 Network Authentication Required';
 
-    const PROTOCOL = 'PhpPages-Protocol';
-    const METHOD = 'PhpPages-Method';
-    const PATH = 'PhpPages-Path';
-    const QUERY = 'PhpPages-Query';
-    const BODY = 'PhpPages-Body';
+    const METADATA_PROTOCOL = 'PhpPages-Protocol';
+    const METADATA_METHOD = 'PhpPages-Method';
+    const METADATA_PATH = 'PhpPages-Path';
+    const METADATA_QUERY = 'PhpPages-Query';
+    const METADATA_BODY = 'PhpPages-Body';
 
     function viaOutput(OutputInterface $output): OutputInterface;
 

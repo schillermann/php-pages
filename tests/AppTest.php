@@ -1,4 +1,5 @@
 <?php
+
 namespace PhpPages\Tests;
 
 use PhpPages\App;
@@ -21,7 +22,7 @@ class AppTest extends TestCase
         $response = new FakeResponse();
 
         (new App(
-            new class implements PageInterface {
+            new class () implements PageInterface {
                 public function viaOutput(OutputInterface $output): OutputInterface
                 {
                     return $output->withMetadata(
@@ -32,14 +33,14 @@ class AppTest extends TestCase
 
                 public function withMetadata(string $name, string $value): PageInterface
                 {
-                    if ($name !== PageInterface::PATH) {
+                    if ($name !== PageInterface::METADATA_PATH) {
                         return $this;
                     }
 
                     if ($value === '/profile') {
                         return new TextPage('My Profile');
                     }
-                    
+
                     return new TextPage('Page not Found');
                 }
             }
