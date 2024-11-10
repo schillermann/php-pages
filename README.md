@@ -7,6 +7,7 @@ PhpPages is an experimental prototype of a web framework, inspired by [Yegor Bug
 - [Quick Start](#quick-start)
 - [Templates](#templates)
 - [REST-API](#rest-api)
+    - [Request Validation](request-validation)
 - [Development Principles](#development-principles)
 - [Measuring Complexity](#measuring-complexity)
 
@@ -30,7 +31,7 @@ use PhpPages\Response\NativeResponse;
         function viaOutput(OutputInterface $output): OutputInterface
         {
             return $output->withMetadata(
-                PageInterface::STATUS,
+                PageInterface::OUTPUT_STATUS,
                 'HTTP/1.1 404 Not Found'
             );
         }
@@ -159,7 +160,7 @@ class ProfilePage implements PageInterface
         function viaOutput(OutputInterface $output): OutputInterface
         {
             return $output->withMetadata(
-                PageInterface::STATUS,
+                PageInterface::OUTPUT_STATUS,
                 'HTTP/1.1 404 Not Found'
             );
         }
@@ -224,14 +225,14 @@ class GetPage implements PageInterface
     function viaOutput(OutputInterface $output): OutputInterface
     {
         return $output->withMetadata(
-            PageInterface::STATUS,
+            PageInterface::OUTPUT_STATUS,
             'HTTP/1.1 404 Not Found'
         );
     }
 
     function withMetadata(string $name, string $value): PageInterface
     {
-        if ($name !== PageInterface::PATH) {
+        if ($name !== PageInterface::METADATA_PATH) {
             return $this;
         }
 
@@ -252,7 +253,7 @@ class GetPage implements PageInterface
         function viaOutput(OutputInterface $output): OutputInterface
         {
             return $output->withMetadata(
-                PageInterface::STATUS,
+                PageInterface::OUTPUT_STATUS,
                 'HTTP/1.1 404 Not Found'
             );
         }
@@ -277,7 +278,7 @@ class GetPage implements PageInterface
     );
 ```
 
-### Validate Request Body JSON
+### Request Validation
 
 ```php
 <?php
@@ -300,13 +301,36 @@ class UserPost implements PageInterface
 
     function viaOutput(OutputInterface $output): OutputInterface
     {
-        $this->requestConstraints->check($this->requestBody);
+        $requestConstraints = (new RequestConstraints())
+            ->withPropertyConstraints(
+                'email',
+                new ConstraintNotBlank(),
+                new ConstraintEmail()
+                new ConstraintType('string'),
+                new ConstraintLength(2, 20)
+            )
+            ->withPropertyConstraints(
+                'username',
+                new ConstraintType('string'),
+                new ConstraintLength(2, 20)
+            )
+            ->withPropertyObject(
+                'address',
+                (new RequestConstraints())
+                    ->withPropertyConstraints(
+                        'street',
+                        new ConstraintType('string'),
+                        new ConstraintLength(0, 50)
+                    )
+            );
+
+        $requestConstraints->check($this->requestBody);
         if ($this->requestConstraints->hasErrors()) {
             return $output->withMetadata(
-                PageInterface::STATUS,
-                PageInterface::STATUS_400_BAD_REQUEST
+                PageInterface::OUTPUT_STATUS,
+                PageInterface::OUTPUT_STATUS_400_BAD_REQUEST
             )->withMetadata(
-                PageInterface::BODY,
+                PageInterface::METADATA_BODY,
                 json_encode(['errors' => $this->requestConstraints->errors()])
             );
         }
@@ -317,26 +341,26 @@ class UserPost implements PageInterface
                 'application/json'
             )
             ->withMetadata(
-                PageInterface::STATUS,
-                PageInterface::STATUS_201_CREATED
+                PageInterface::OUTPUT_STATUS,
+                PageInterface::OUTPUT_STATUS_201_CREATED
             )
             ->withMetadata(
                 PageInterface::METADATA_BODY,
                 json_encode([
                     'email' => $this->requestBody['email'],
                     'username' => isset($this->requestBody['username'])? $this->requestBody['username'] : '',
+                    'addressStreet' => isset($this->requestBody['address']['street']])? $this->requestBody['username'] : ''
                 ])
             );
     }
 
     function withMetadata(string $name, string $value): PageInterface
     {
-        if (PageInterface::BODY !== $name) {
+        if (PageInterface::METADATA_BODY !== $name) {
             return $this;
         }
 
         return new self(
-            $this->requestConstraints,
             json_decode($value, true)
         );
     }
@@ -347,32 +371,20 @@ class PostPage implements PageInterface
     function viaOutput(OutputInterface $output): OutputInterface
     {
         return $output->withMetadata(
-            PageInterface::STATUS,
+            PageInterface::OUTPUT_STATUS,
             'HTTP/1.1 404 Not Found'
         );
     }
 
     function withMetadata(string $name, string $value): PageInterface
     {
-        if ($name !== PageInterface::PATH) {
+        if ($name !== PageInterface::METADATA_PATH) {
             return $this;
         }
 
         if ('/users' === $value)) {
             return new UserPost(
-                (new RequestConstraints())
-                ->withProperty(
-                    'email',
-                    new ConstraintNotBlank(),
-                    new ConstraintEmail()
-                    new ConstraintType('string'),
-                    new ConstraintLength(2, 50)
-                )
-                ->withProperty(
-                    'username',
-                    new ConstraintType('string'),
-                    new ConstraintLength(2, 50)
-                )
+                
             );
         }
         return $this;
@@ -389,7 +401,7 @@ class PostPage implements PageInterface
         function viaOutput(OutputInterface $output): OutputInterface
         {
             return $output->withMetadata(
-                PageInterface::STATUS,
+                PageInterface::OUTPUT_STATUS,
                 'HTTP/1.1 404 Not Found'
             );
         }

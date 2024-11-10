@@ -32,7 +32,7 @@ class SimpleOutput implements OutputInterface
             $this->head[] = 'Content-Length: 0';
         }
 
-        if (PageInterface::STATUS === $name) {
+        if (PageInterface::OUTPUT_STATUS === $name) {
             $this->head[0] = $value;
         } elseif (PageInterface::METADATA_BODY === $name) {
             $this->body .= ($this->body) ? PHP_EOL . $value : $value;
